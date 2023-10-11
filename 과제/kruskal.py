@@ -15,11 +15,15 @@ def union_parent(parent, a, b):
     parent[a] = b
 
 def kruskal_mst(graph, n):
-  edges = [(weight, a, b) for a, b, weight in graph]
+  edges, parent, mst = [], [], []
+
+  for a, b, weight in graph:
+    edges.append((weight, a, b))
+
   edges.sort()
 
-  parent = [i for i in range(n + 1)]
-  mst = []
+  for i in range(n + 1):
+    parent.append(i)
 
   for edge in edges:
     weight, a, b = edge
