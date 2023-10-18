@@ -7,7 +7,7 @@ def GCD(a, b):
     return GCD(b, a % b)
 
 def LCM(a, b):
-  return a * b / GCD(a, b)
+  return a * b // GCD(a, b)
 
 for _ in range(int(sys.stdin.readline())):
   a, b = map(int, sys.stdin.readline().split())
