@@ -1,3 +1,5 @@
+import timeit
+
 def AllPairsShortest(D, n):
   for k in range(n):
     for i in range(n):
@@ -5,12 +7,6 @@ def AllPairsShortest(D, n):
         for j in range(n):
           if j != k and j != i:
             D[i][j] = min(D[i][k] + D[k][j], D[i][j])
-
-  for i in range(n):
-    for j in range(n - 1):
-      if i != j:
-        if i > j:
-          D[i][j] = ''
 
 n = 10
 edges = [[0, 1, 15],
@@ -38,7 +34,17 @@ for u, v, w in edges:
   dist[u][v] = w
   dist[v][u] = w
 
+start = timeit.default_timer()
 AllPairsShortest(dist, n)
+end = timeit.default_timer()
+
+for i in range(n):
+  for j in range(n - 1):
+    if i != j:
+      if i > j:
+        dist[i][j] = ''
 
 for d in dist:
   print(d)
+
+print(f"Execution Time : {end - start:.10f} sec")
