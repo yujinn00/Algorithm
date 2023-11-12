@@ -1,7 +1,7 @@
 import heapq
 import timeit
 
-def ShortestPath(G, s):
+def AllPairsShortest(G, s):
   n, edges = G
 
   D = [float('inf')] * n
@@ -47,7 +47,7 @@ for u, v, w in edges:
   graph[v].append((u, w))
 
 start = timeit.default_timer()
-dist = [ShortestPath((n, graph), start_node) for start_node in range(n)]
+dist = [AllPairsShortest((n, graph), start_node) for start_node in range(n)]
 end = timeit.default_timer()
 
 for i in range(n):
