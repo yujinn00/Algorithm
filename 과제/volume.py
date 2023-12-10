@@ -1,35 +1,42 @@
 import numpy as np
-import time
 import pandas as pd
+import time
 
-# CSV 파일에서 데이터를 불러옵니다.
-data = pd.read_csv('input.csv', header=None).values[1:].T
+def load_data(path):
+  data = pd.read_csv(path, header=None).values[1:].T
+  return data
 
-# 볼륨을 계산하는 함수를 정의합니다.
 def compute_volume(matrix):
-    return np.sqrt(np.abs(np.linalg.det(matrix @ matrix.T)))
+  return np.sqrt(np.abs(np.linalg.det(matrix @ matrix.T)))
 
-# 볼륨이 가장 큰 행렬을 찾는 함수를 정의합니다.
 def find_max_volume(data):
-    max_volume = 0
-    max_index = -1
-    for i in range(data.shape[0]):
-        volume = compute_volume(data[i:i+20])
-        if volume > max_volume:
-            max_volume = volume
-            max_index = i
-    return max_volume, max_index
+  selected_vectors = []
+  selected_indexes = []
 
-# 본격적인 계산을 시작합니다.
+  for _ in range(20):
+    max_volume = -1
+    max_index = -1
+
+    for i in range(data.shape[0]):
+      if i not in selected_indexes:
+        temp_vectors = selected_vectors.copy()
+        temp_vectors.append(data[i])
+        volume = compute_volume(np.array(temp_vectors))
+
+        if volume > max_volume:
+          max_volume = volume
+          max_index = i
+
+    selected_vectors.append(data[max_index])
+    selected_indexes.append(max_index)
+
+  return max_volume, selected_indexes
+
 start_time = time.time()
-max_volume, max_index = find_max_volume(data)
+data = load_data("input.csv")
+max_volume, selected_indexes = find_max_volume(data)
 end_time = time.time()
 
-# 결과를 출력합니다.
 print("Max volume : ", max_volume)
-print("Index : ", max_index)
+print("Selected indexes : ", selected_indexes)
 print("Running time : ", end_time - start_time, "seconds")
-
-# Max volume :  33153164156.72865
-# Index :  7474
-# Running time :  0.11171841621398926 seconds
