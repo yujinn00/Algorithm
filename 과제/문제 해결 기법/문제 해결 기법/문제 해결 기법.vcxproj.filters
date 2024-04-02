@@ -30,5 +30,8 @@
     <ClCompile Include="dish.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="rangeSum.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

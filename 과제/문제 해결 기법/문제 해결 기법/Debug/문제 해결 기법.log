@@ -1,2 +1,6 @@
-﻿  dish.cpp
+﻿  rangeSum.cpp
+D:\CODE\Algorithm\과제\문제 해결 기법\문제 해결 기법\rangeSum.cpp(14,25): warning C4244: '인수': '__int64'에서 'const unsigned int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+D:\CODE\Algorithm\과제\문제 해결 기법\문제 해결 기법\rangeSum.cpp(17,18): warning C4244: '인수': '__int64'에서 'const unsigned int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+D:\CODE\Algorithm\과제\문제 해결 기법\문제 해결 기법\rangeSum.cpp(28,28): warning C4244: '인수': '__int64'에서 'const unsigned int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+D:\CODE\Algorithm\과제\문제 해결 기법\문제 해결 기법\rangeSum.cpp(33,26): warning C4244: '인수': '__int64'에서 'const unsigned int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
   문제 해결 기법.vcxproj -> D:\CODE\Algorithm\과제\문제 해결 기법\Debug\문제 해결 기법.exe
