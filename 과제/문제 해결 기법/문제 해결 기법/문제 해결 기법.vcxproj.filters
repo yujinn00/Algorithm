@@ -36,5 +36,11 @@
     <ClCompile Include="rmq.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="hull.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="parallelogram.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
