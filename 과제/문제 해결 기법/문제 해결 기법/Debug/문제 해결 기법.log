@@ -1,2 +1,3 @@
-﻿  hull.cpp
+﻿  rectangles.cpp
+D:\CODE\Algorithm\과제\문제 해결 기법\문제 해결 기법\rectangles.cpp(37,23): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
   문제 해결 기법.vcxproj -> D:\CODE\Algorithm\과제\문제 해결 기법\Debug\문제 해결 기법.exe
