@@ -3,67 +3,93 @@
 #include <vector>
 #include <map>
 #include <algorithm>
+
 using namespace std;
 
-struct Event {
-    int x, height, type; // type: 1 for start, -1 for end
-    bool operator<(const Event& other) const {
-        return x < other.x || (x == other.x && type > other.type);
+class RectangleEvent {
+public:
+    int position, height, eventType;
+    RectangleEvent(int position, int height, int eventType) : position(position), height(height), eventType(eventType) {}
+
+    bool operator<(const RectangleEvent& rhs) const {
+        if (position != rhs.position) return position < rhs.position;
+        else return eventType > rhs.eventType;
     }
 };
 
 int main() {
-    ifstream infile("contour.inp");
-    ofstream outfile("contour.out");
-    vector<Event> events;
+    ifstream fin("contour.inp");
+    ofstream fout("contour.out");
+
+    vector<RectangleEvent> event;
     int caseNumber = 0;
 
     while (true) {
         int L, H, R;
-        events.clear();
+        event.clear();
 
-        while (infile >> L >> H >> R) {
+        while (fin >> L >> H >> R) {
             if (L == 0 && H == 0 && R == 0) break;
-            events.push_back({L, H, 1});
-            events.push_back({R, H, -1});
+            event.emplace_back(L, H, 1);
+            event.emplace_back(R, H, -1);
         }
 
-        if (events.empty()) break; // No more input
+        if (event.empty()) break;
 
-        sort(events.begin(), events.end());
+        fout << "Test Case #" << ++caseNumber << " :";
 
-        map<int, int> activeHeights;
-        int prevX = 0;
-        long long totalArea = 0;
-        vector<long long> areas;
-        for (const auto& e : events) {
-            if (!activeHeights.empty()) {
-                int currentWidth = e.x - prevX;
-                totalArea += (long long)activeHeights.rbegin()->first * currentWidth;
-                if (e.type == -1 || (e.type == 1 && activeHeights.rbegin()->first < e.height)) {
-                    areas.push_back(totalArea);
-                    totalArea = 0;
+        sort(event.begin(), event.end());
+
+        multimap<int, int> heightCount;
+        vector<long long> recordArea;
+        int prePosition = -1;
+        long long maxHeight = 0, areaCover = 0;
+        auto eventIter = event.begin();
+
+        while (eventIter != event.end()) {
+            const RectangleEvent& rectEvent = *eventIter;
+
+            if (prePosition != -1 && rectEvent.position != prePosition) {
+                long long width = rectEvent.position - prePosition;
+
+                if (maxHeight > 0) areaCover += width * maxHeight;
+
+                if (heightCount.empty() && areaCover > 0) {
+                    recordArea.push_back(areaCover);
+                    areaCover = 0;
                 }
             }
-            if (e.type == 1) {
-                activeHeights[e.height]++;
-            } else {
-                if (--activeHeights[e.height] == 0) {
-                    activeHeights.erase(e.height);
+
+            if (rectEvent.eventType == 1) heightCount.insert({ rectEvent.height, rectEvent.eventType });
+            else {
+                auto itr = heightCount.find(rectEvent.height);
+                if (itr != heightCount.end()) heightCount.erase(itr);
+            }
+
+            if (!heightCount.empty()) maxHeight = heightCount.rbegin()->first;
+            else {
+                maxHeight = 0;
+                if (areaCover > 0) {
+                    recordArea.push_back(areaCover);
+                    areaCover = 0;
                 }
             }
-            prevX = e.x;
+
+            prePosition = rectEvent.position;
+            ++eventIter;
         }
 
-        outfile << "Test Case #" << ++caseNumber << " :";
-        for (auto area : areas) {
-            outfile << " " << area;
+        if (areaCover > 0) recordArea.push_back(areaCover);
+
+        for (const auto area : recordArea) {
+            fout << " " << area;
         }
-        outfile << endl;
+
+        fout << '\n';
     }
 
-    infile.close();
-    outfile.close();
+    fin.close();
+    fout.close();
 
     return 0;
 }
