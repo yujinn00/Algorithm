@@ -5,54 +5,73 @@
 
 using namespace std;
 
-int gcd(int a, int b) {
-    if (b == 0) return a;
-    else return gcd(b, a % b);
+struct Event {
+    int x, y1, y2, type;
+    bool operator<(const Event& other) const {
+        return x < other.x;
+    }
+};
+
+void removeDuplicates(vector<int>& v) {
+    sort(v.begin(), v.end());
+    v.erase(unique(v.begin(), v.end()), v.end());
 }
 
-int getPerimeter(int x, int y) {
-    int a = 2 * x * y;
-    int b = x * x - y * y;
+int getHeight(const vector<int>& yy, const vector<int>& cnt) {
+    int height = 0;
 
-    return 2 * (a + b);
+    for (int i = 0; i < yy.size() - 1; ++i) {
+        if (cnt[i] > 0) height += yy[i + 1] - yy[i];
+    }
+
+    return height;
 }
 
-int maxRectangle(int L) {
-    vector<int> perimeter;
+long long calculateTotalArea(vector<Event>& events, vector<int>& yy) {
+    long long totalArea = 0;
+    vector<int> cnt(yy.size(), 0);
 
-    for (int x = 1; x * x < L; ++x) {
-        for (int y = 1; y < x; ++y) {
-            if ((x - y) % 2 == 1 && gcd(x, y) == 1) {
-                int pm = getPerimeter(x, y);
+    removeDuplicates(yy);
 
-                if (pm <= L) perimeter.push_back(pm);
-            }
+    sort(events.begin(), events.end());
+
+    for (int i = 0; i < events.size(); ++i) {
+        if (i > 0) {
+            totalArea += static_cast<long long>(getHeight(yy, cnt)) * (events[i].x - events[i - 1].x);
+        }
+
+        for (int j = 0; j < yy.size() - 1; ++j) {
+            if (yy[j] >= events[i].y1 && yy[j + 1] <= events[i].y2) cnt[j] += events[i].type;
         }
     }
 
-    sort(perimeter.begin(), perimeter.end());
-
-    int count = 0;
-
-    for (int i = 0; i < perimeter.size() && L >= perimeter[i]; ++i) {
-        L -= perimeter[i];
-        ++count;
-    }
-
-    return count;
+    return totalArea;
 }
 
 int main() {
     ifstream fin("rectangles.inp");
     ofstream fout("rectangles.out");
 
-    int T, L;
-    fin >> T;
+    int n;
+    fin >> n;
 
-    for (int i = 0; i < T; ++i) {
-        fin >> L;
-        fout << maxRectangle(L) << "\n";
+    vector<Event> events;
+    vector<int> x, y;
+
+    for (int i = 0; i < n; ++i) {
+        int x1, y1, x2, y2;
+        fin >> x1 >> y1 >> x2 >> y2;
+
+        events.push_back({ x1, y1, y2, 1 });
+        events.push_back({ x2, y1, y2, -1 });
+
+        y.push_back(y1);
+        y.push_back(y2);
     }
+
+    long long totalArea = calculateTotalArea(events, y);
+
+    fout << totalArea << "\n";
 
     fin.close();
     fout.close();
