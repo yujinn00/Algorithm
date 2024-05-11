@@ -1,97 +1,78 @@
 #include <iostream>
 #include <fstream>
-#include <cmath>
 #include <iomanip>
+#include <cmath>
 
 using namespace std;
 
-// Structure to represent a point
-struct Point {
-    int x, y;
+struct Circle {
+    int x, y, r;
 };
 
-// Function to calculate distance between two points
-double distance(Point p1, Point p2) {
-    return sqrt(pow(p2.x - p1.x, 2) + pow(p2.y - p1.y, 2));
+struct Point {
+    double x, y;
+};
+
+double distance(double x1, double y1, double x2, double y2) {
+    return sqrt(pow(x2 - x1, 2) + pow(y2 - y1, 2));
 }
 
-// Function to calculate area of triangle given three sides
 double triangleArea(double a, double b, double c) {
     double s = (a + b + c) / 2;
     return sqrt(s * (s - a) * (s - b) * (s - c));
 }
 
-// Function to calculate area of triangle given three points
-double triangleArea(Point p1, Point p2, Point p3) {
-    double a = distance(p1, p2);
-    double b = distance(p2, p3);
-    double c = distance(p3, p1);
-    return triangleArea(a, b, c);
-}
+bool findIntersection(Circle c1, Circle c2, Point& p) {
+    double d = distance(c1.x, c1.y, c2.x, c2.y);
 
-// Function to find intersection points of two circles
-void findIntersection(Point p1, int r1, Point p2, int r2, Point& inter1, Point& inter2) {
-    double d = distance(p1, p2);
+    if (d > c1.r + c2.r || d < abs(c1.r - c2.r)) return false;
 
-    // No intersection
-    if (d > r1 + r2 || d < abs(r1 - r2)) {
-        inter1 = { INT_MAX, INT_MAX };
-        inter2 = { INT_MAX, INT_MAX };
-        return;
-    }
+    double a = (pow(c1.r, 2) - pow(c2.r, 2) + pow(d, 2)) / (2 * d);
+    double h = sqrt(pow(c1.r, 2) - pow(a, 2));
+    double x0 = c1.x + a * (c2.x - c1.x) / d;
+    double y0 = c1.y + a * (c2.y - c1.y) / d;
+    double rx = -h * (c2.y - c1.y) / d;
+    double ry = h * (c2.x - c1.x) / d;
 
-    double a = (pow(r1, 2) - pow(r2, 2) + pow(d, 2)) / (2 * d);
-    double h = sqrt(pow(r1, 2) - pow(a, 2));
-    double x2 = p1.x + a * (p2.x - p1.x) / d;
-    double y2 = p1.y + a * (p2.y - p1.y) / d;
+    p.x = x0 + rx;
+    p.y = y0 + ry;
 
-    inter1 = { (int)(x2 + h * (p2.y - p1.y) / d), (int)(y2 - h * (p2.x - p1.x) / d) };
-    inter2 = { (int)(x2 - h * (p2.y - p1.y) / d), (int)(y2 + h * (p2.x - p1.x) / d) };
-}
-
-// Function to calculate area of triangle formed by three circles
-double calculateTriangleArea(Point inter1, Point inter2, Point inter3) {
-    double a = distance(inter1, inter2);
-    double b = distance(inter2, inter3);
-    double c = distance(inter3, inter1);
-    return triangleArea(a, b, c);
+    return true;
 }
 
 int main() {
     ifstream fin("area.inp");
     ofstream fout("area.out");
 
-    if (!fin) {
-        cout << "Error: Unable to open input file." << endl;
-        return 1;
-    }
-
-    if (!fout) {
-        cout << "Error: Unable to open output file." << endl;
-        return 1;
-    }
-
     int T;
     fin >> T;
 
-    for (int t = 0; t < T; ++t) {
-        // Read circle information
-        Point p1, p2, p3, inter1, inter2, inter3;
-        int r1, r2, r3;
-        fin >> p1.x >> p1.y >> r1;
-        fin >> p2.x >> p2.y >> r2;
-        fin >> p3.x >> p3.y >> r3;
+    while (T--) {
+        Circle circles[3];
+        Point points[3];
+        int intersectionCount = 0;
 
-        // Find intersection points
-        findIntersection(p1, r1, p2, r2, inter1, inter2);
-        findIntersection(p2, r2, p3, r3, inter2, inter3);
-        findIntersection(p3, r3, p1, r1, inter3, inter1);
+        for (int i = 0; i < 3; ++i) {
+            fin >> circles[i].x >> circles[i].y >> circles[i].r;
+        }
 
-        // Calculate area of triangle formed by intersection points
-        double area = calculateTriangleArea(inter1, inter2, inter3);
+        for (int i = 0; i < 3; ++i) {
+            if (findIntersection(circles[i], circles[(i + 1) % 3], points[i])) {
+                intersectionCount++;
+            }
+        }
 
-        // Output result with 2 decimal points
-        fout << fixed << setprecision(2) << area << endl;
+        if (intersectionCount < 3) {
+            fout << "0.00" << "\n";
+        } else {
+            double a = distance(points[0].x, points[0].y, points[1].x, points[1].y);
+            double b = distance(points[1].x, points[1].y, points[2].x, points[2].y);
+            double c = distance(points[2].x, points[2].y, points[0].x, points[0].y);
+
+            double area = triangleArea(a, b, c);
+
+            fout << fixed << setprecision(2) << area << "\n";
+        }
     }
 
     fin.close();
