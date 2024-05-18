@@ -81,5 +81,11 @@
     <ClCompile Include="mail.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="mice.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="service.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
