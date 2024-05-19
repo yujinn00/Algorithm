@@ -1,3 +1,4 @@
-﻿  service.cpp
-C:\CODE\algorithm\과제\문제 해결 기법\문제 해결 기법\service.cpp(57,30): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
+﻿  twoDigitPrime.cpp
+C:\CODE\algorithm\과제\문제 해결 기법\문제 해결 기법\twoDigitPrime.cpp(25,27): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
+C:\CODE\algorithm\과제\문제 해결 기법\문제 해결 기법\twoDigitPrime.cpp(26,35): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
   문제 해결 기법.vcxproj -> C:\CODE\algorithm\과제\문제 해결 기법\Debug\문제 해결 기법.exe
